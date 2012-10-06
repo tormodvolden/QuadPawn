@@ -34,6 +34,11 @@ CC      = arm-none-eabi-gcc
 CP      = arm-none-eabi-objcopy
 OD      = arm-none-eabi-objdump
 
+ifndef VERBOSE
+O_CC := $(CC)
+CC = @echo "    CC   " $@; $(O_CC)
+endif
+
 ifdef windir
 RM = del
 endif
