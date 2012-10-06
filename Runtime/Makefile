@@ -59,16 +59,19 @@ LFLAGS += -nostartfiles -nostdlib -Wl,-Map=build/$(NAME).map -eReset_Handler -Wl
 VPATH = build
 _OBJS = $(addprefix build/,$(OBJS))
 
-all: $(NAME).HEX
+all: $(NAME).HEX $(NAME).bin
 
 build_dir:
 	mkdir -p build
 
 clean:
-	$(RM) $(NAME).HEX build/*
+	$(RM) $(NAME).HEX $(NAME).bin build/*
 
 $(NAME).HEX: build/$(NAME).elf
 	$(CP) -O ihex $< $@
+
+$(NAME).bin: build/$(NAME).elf
+	$(CP) -O binary $< $@
 
 baselibc/libc.a: baselibc/Makefile
 	make -C baselibc
