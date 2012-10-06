@@ -358,10 +358,12 @@ int main(void)
     gpio_usart1_rx_mode(GPIO_HIGHZ_INPUT);
     printf("\nBoot!\n");
     
+#ifndef DSONANO
     // Reduce the wait states of the FPGA & LCD interface
     // It works for me, hopefully it works for you too :)
     FSMC_BTR1 = 0x10100110;
     FSMC_BTR2 = 0x10100110;
+#endif
     
     __USB_Init();
     __Set(ADC_CTRL, EN);       
