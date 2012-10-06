@@ -153,6 +153,7 @@ CH_D Trigger source & kind select =>
 
 // =============================================================================
 
+#if 0
 typedef struct  // hardware integrated properties 
 {
   u16 LCD_X;    // screen horizontal pixels
@@ -203,6 +204,7 @@ extern Y_attr *Y_Attr;
 extern X_attr *X_Attr; 
 extern G_attr *G_Attr; 
 extern T_attr *T_Attr; 
+#endif
 
 // CPU clock frequency is 72 MHz.
 #define CPUFREQ 72000000
