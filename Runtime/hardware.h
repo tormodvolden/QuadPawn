@@ -3,9 +3,17 @@
 #define HARDWARE_H
 
 /* LCD screen size */
-#define LCD_X 400
-#define LCD_Y 240
+#ifdef DSONANO
+# define LCD_X 320
+#else
+# define LCD_X 400 /* DSO Quad */
+#endif
+#define LCD_Y 240 /* for both Quad and Nano */
 
-#define VM_SIZE 32768
+#ifdef DSONANO
+# define VM_SIZE 16384
+#else
+# define VM_SIZE 32768
+#endif
 
 #endif /* HARDWARE_H */
