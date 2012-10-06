@@ -4,6 +4,9 @@
 # Name of the target application
 NAME = PAWN_APP
 
+# By default, build for DSO Nano instead of DSO Quad
+DSONANO = 1
+
 # Names of the object files (add all .c files you want to include)
 OBJS = main.o ds203_io.o libc_glue.o drawing.o menubar.o buttons.o \
 	file_selector.o msgbox.o metadata.o debug.o \
