@@ -8,41 +8,47 @@
 #include "gpio.h"
 
 /* SPI access routines */
+#ifdef DSONANO
+DECLARE_GPIO(cs, GPIOB, 12);
+# define SPIx SPI2
+#else
 DECLARE_GPIO(cs, GPIOB, 7);
+# define SPIx SPI3
+#endif
 
 static void spi_send(uint8_t byte)
 {
-    while (!(SPI3->SR & SPI_SR_TXE));
-    SPI3->DR = byte;
+    while (!(SPIx->SR & SPI_SR_TXE));
+    SPIx->DR = byte;
 }
 
 static uint8_t spi_recv()
 {
-    while (!(SPI3->SR & SPI_SR_TXE));
-    while (SPI3->SR & SPI_SR_BSY); // Wait for previous byte transmission
-    always_read(SPI3->DR); // Clear RXNE & overflow flags
-    always_read(SPI3->SR);
-    SPI3->DR = 0xFF;
-    while (!(SPI3->SR & SPI_SR_RXNE));
-    return SPI3->DR;
+    while (!(SPIx->SR & SPI_SR_TXE));
+    while (SPIx->SR & SPI_SR_BSY); // Wait for previous byte transmission
+    always_read(SPIx->DR); // Clear RXNE & overflow flags
+    always_read(SPIx->SR);
+    SPIx->DR = 0xFF;
+    while (!(SPIx->SR & SPI_SR_RXNE));
+    return SPIx->DR;
 }
 
 static void spi_recv_block(uint8_t *buffer, unsigned count)
 {
-    while (!(SPI3->SR & SPI_SR_TXE));
-    while (SPI3->SR & SPI_SR_BSY); // Wait for previous byte transmission
-    always_read(SPI3->DR); // Clear RXNE & overflow flags
-    always_read(SPI3->SR);
+    while (!(SPIx->SR & SPI_SR_TXE));
+    while (SPIx->SR & SPI_SR_BSY); // Wait for previous byte transmission
+    always_read(SPIx->DR); // Clear RXNE & overflow flags
+    always_read(SPIx->SR);
     
-    SPI3->DR = 0xFF;
+    SPIx->DR = 0xFF;
     while (count--)
     {
-        while (!(SPI3->SR & SPI_SR_TXE));
+        while (!(SPIx->SR & SPI_SR_TXE));
         
         __disable_irq(); // Interrupt in here could cause RX overflow
-        SPI3->DR = 0xFF;
-        while (!(SPI3->SR & SPI_SR_RXNE));
-        *buffer++ = SPI3->DR ^ 0xFF; // DSO Quad stores the inverse of bytes
+        SPIx->DR = 0xFF;
+        while (!(SPIx->SR & SPI_SR_RXNE));
+        *buffer++ = SPIx->DR ^ 0xFF; // DSO Quad stores the inverse of bytes
         __enable_irq();
     }
 }
