@@ -6,6 +6,7 @@
 #include "amx.h"
 #include "amxpool.h"
 
+#include "hardware.h"
 #include "BIOS.h"
 #include "stm32f10x.h"
 #include "ds203_io.h"
@@ -30,7 +31,7 @@ FIL amx_file;
 char amx_filename[20];
 
 // Data block allocated for the virtual machine
-uint8_t vm_data[32768] __attribute__((aligned(4)));
+uint8_t vm_data[VM_SIZE] __attribute__((aligned(4)));
 
 int amxinit_display(AMX *amx);
 int amx_CoreInit(AMX *amx);
