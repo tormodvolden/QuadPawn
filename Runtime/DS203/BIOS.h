@@ -290,6 +290,8 @@ static void LCD_DELAY()
 #define LCD_PORT    (*((vu16 *)(0x60000000+0x00)))
 #define LCD_TYPE_ILI9327 0x02049327
 
+#ifndef DSONANO
+
 static void LCD_WR_Ctrl(u16 Reg) 
 {
     LCD_RS_LOW();
@@ -319,6 +321,8 @@ static uint32_t LCD_RD_Type()
     LCD_Type |= (LCD_PORT&0xFF);
     return LCD_Type;
 }
+
+#endif /* ifndef DSONANO */
 
 #endif  
 /*******************************  END OF FILE  ********************************/

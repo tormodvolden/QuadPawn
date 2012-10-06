@@ -17,7 +17,11 @@ OBJS = main.o ds203_io.o libc_glue.o drawing.o menubar.o buttons.o \
 COMMITID := $(shell git describe --always || echo unknown)
 
 # Linker script (choose which application position to use)
+ifdef DSONANO
+LFLAGS  = -L linker_scripts -T dsonano.lds
+else
 LFLAGS  = -L linker_scripts -T app4.lds
+endif
 
 # Any libraries to include
 LIBS = -lm -lgcc baselibc/libc.a
@@ -26,8 +30,13 @@ LIBS = -lm -lgcc baselibc/libc.a
 CFLAGS = -I baselibc/include -I stm32_headers -I DS203 \
 	-I amx -I fatfs -I libfixmath -DCOMMITID=\"$(COMMITID)\"
 
+ifdef DSONANO
+# the DSO Nano LIB partly substitutes the Quad BIOS
+OBJS += startup.o nanolib.o nanoglue.o Interrupt.o
+else
 # DS203 generic stuff
 OBJS += startup.o BIOS.o Interrupt.o
+endif
 
 # Names of the toolchain programs
 CC      = arm-none-eabi-gcc
@@ -51,6 +60,10 @@ CFLAGS += -fno-common -Os -ffunction-sections -g -std=gnu99 -DNDEBUG
 
 # Compiler warnings
 CFLAGS += -Wall -Werror -Wno-unused
+
+ifdef DSONANO
+CFLAGS += -DDSONANO
+endif
 
 # Default linker arguments (disables GCC-provided startup.c, creates .map file)
 LFLAGS += -nostartfiles -nostdlib -Wl,-Map=build/$(NAME).map -eReset_Handler -Wl,-gc-sections
@@ -78,6 +91,9 @@ baselibc/libc.a: baselibc/Makefile
 
 build/$(NAME).elf: ${_OBJS} baselibc/libc.a
 	$(CC) $(CFLAGS) $(LFLAGS) -o $@ ${_OBJS} ${LIBS}
+
+build/nanolib.S: DS203/nanolib-funcs.sh
+	sh $< > $@
 
 # Rebuild all objects if any header changes
 $(_OBJS): DS203/*.h Makefile

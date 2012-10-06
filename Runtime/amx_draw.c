@@ -11,6 +11,9 @@
 #include "stm32f10x.h"
 #include "mathutils.h"
 #include "drawing.h"
+#ifdef DSONANO
+# include "nanoglue.h"
+#endif
 
 static cell AMX_NATIVE_CALL amx_draw_text(AMX *amx, const cell *params)
 {
@@ -74,6 +77,11 @@ static cell AMX_NATIVE_CALL amx_blend(AMX *amx, const cell *params)
 static cell AMX_NATIVE_CALL amx_putcolumn(AMX *amx, const cell *params)
 {
     // putcolumn(x, y, const pixels[], count, wait);
+#ifdef DSONANO
+    putcolumn(params[1], params[2], params[3], params[4]);
+#else
+    // FIXME: This could go into a Quad-specific file, defining putcolumn
+
     __Point_SCR(params[1], params[2]);
     
     cell *pixels = (cell*)params[3];
@@ -91,12 +99,17 @@ static cell AMX_NATIVE_CALL amx_putcolumn(AMX *amx, const cell *params)
         __LCD_DMA_Ready();
     }
     
+#endif
     return 0;
 }
 
 static cell AMX_NATIVE_CALL amx_getcolumn(AMX *amx, const cell *params)
 {
     // getcolumn(x, y, pixels[], count);
+#ifdef DSONANO
+    getcolumn(params[1], params[2], (u32*) params[3], params[4]);
+#else
+    // FIXME: this could go into a Quad file, defining getcolumn
     
     int x = params[1];
     int y = params[2];
@@ -140,6 +153,7 @@ static cell AMX_NATIVE_CALL amx_getcolumn(AMX *amx, const cell *params)
         }
     }
     
+#endif
     return 0;
 }
 
