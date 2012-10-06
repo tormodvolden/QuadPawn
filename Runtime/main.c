@@ -362,6 +362,7 @@ int main(void)
     FSMC_BTR1 = 0x10100110;
     FSMC_BTR2 = 0x10100110;
     
+    __USB_Init();
     __Set(ADC_CTRL, EN);       
     __Set(ADC_MODE, SEPARATE);
     
