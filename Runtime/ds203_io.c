@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include "hardware.h"
 #include "ds203_io.h"
 #include "BIOS.h"
 #include <stdio.h>
@@ -85,22 +86,30 @@ static int quantize(uint16_t color, const uint32_t *palette)
     return closest;
 }
 
+#define LCD_X_HI (LCD_X >> 8)
+#define LCD_X_LO (LCD_X & 0xff)
+#define LCD_Y_HI (LCD_Y >> 8)
+#define LCD_Y_LO (LCD_Y & 0xff)
+#define BMP_FSIZE_HI    ((LCD_X * LCD_Y / 2 + 118) >> 8)
+#define BMP_FSIZE_LO    ((LCD_X * LCD_Y / 2 + 118) & 0xff)
+#define BMAP_SIZE_HI    ((LCD_X * LCD_Y / 2) >> 8)
+#define BMAP_SIZE_LO    ((LCD_X * LCD_Y / 2) & 0xff)
 // We know the LCD size in advance, so the file header can be written out
 // by hand.
 // The main header is 14 bytes, bitmap info header is 40 bytes and the palette
 // is 64 bytes. Therefore bitmap data starts at offset 118.
 const uint8_t BMP_HEADER[54] = {
     0x42, 0x4D, // BMP magic
-    0xF6, 0xBB, 0x00, 0x00, // File size, 400 * 240 / 2 + 118 = 48118 bytes
+    BMP_FSIZE_LO, BMP_FSIZE_HI, 0x00, 0x00, // File size, X * Y / 2 + 118
     0x00, 0x00, 0x00, 0x00, // Creator
     0x76, 0x00, 0x00, 0x00, // Offset to bitmap data = 118 bytes 
     0x28, 0x00, 0x00, 0x00, // Header size = 40 bytes
-    0x90, 0x01, 0x00, 0x00, // Bitmap width = 400 pixels
-    0xF0, 0x00, 0x00, 0x00, // Bitmap height = 240 pixels
+    LCD_X_LO, LCD_X_HI, 0x00, 0x00, // Bitmap width
+    LCD_Y_LO, LCD_Y_HI, 0x00, 0x00, // Bitmap height
     0x01, 0x00,             // 1 color plane
     0x04, 0x00,             // 4 bits per pixel
     0x00, 0x00, 0x00, 0x00, // Uncompressed
-    0x80, 0xBB, 0x00, 0x00, // Bitmap data size, 400 * 240 / 2 = 48000 bytes
+    BMAP_SIZE_LO, BMAP_SIZE_HI, 0x00, 0x00, // Bitmap data size
     0x70, 0x17, 0x00, 0x00, // Horizontal pixel per meter = 6000
     0x70, 0x17, 0x00, 0x00, // Vertical pixel per meter
     0x10, 0x00, 0x00, 0x00, // Palette colors = 16
@@ -133,9 +142,9 @@ bool write_bitmap(const char *filename, const uint32_t *palette)
     }
     
     // Write bitmap data
-    for (int y = 0; y < 240; y++)
+    for (int y = 0; y < LCD_Y; y++)
     {
-        for (int x = 0; x < 400; x += 2)
+        for (int x = 0; x < LCD_X; x += 2)
         {
             __Point_SCR(x, y);
             int colorH = quantize(__LCD_GetPixl(), palette);

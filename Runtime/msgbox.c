@@ -1,5 +1,6 @@
 /* A message dialog, with just simply a Close button. */
 
+#include "hardware.h"
 #include "drawing.h"
 #include "buttons.h"
 #include "menubar.h"
@@ -19,7 +20,7 @@ int show_question(const char *opt1, const char *opt2, const char *opt3,
     
     draw_menubar(opt1, opt2, opt3, opt4);
     
-    draw_flowtext(message, 0, 0, 400, 200, RGB(255,255,255), 0, false);
+    draw_flowtext(message, 0, 0, LCD_X, LCD_Y - 40, RGB(255,255,255), 0, false);
     
     bool has_command[5] = {0, !!(*opt1), !!(*opt2), !!(*opt3), !!(*opt4)};
     int option = 0;

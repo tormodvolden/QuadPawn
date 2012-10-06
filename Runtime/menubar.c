@@ -1,3 +1,4 @@
+#include "hardware.h"
 #include "drawing.h"
 #include "menubar.h"
 #include "BIOS.h"
@@ -14,14 +15,14 @@ void draw_menubar(const char *btn1, const char *btn2, const char *btn3, const ch
 {
     __Set(BETTERY_DT, 1); // Start battery voltage measurement
     
-    fill_rectangle(0, 220, 400, 20, MENU_BG);
-    drawline(0, 220, 400, 220, MENU_BORDER, 0);
-    drawline(0, 240, 400, 240, MENU_BORDER, 0);
+    fill_rectangle(0, LCD_Y - 20, LCD_X, 20, MENU_BG);
+    drawline(0, LCD_Y - 20, LCD_X, LCD_Y - 20, MENU_BORDER, 0);
+    drawline(0, LCD_Y, LCD_X, LCD_Y, MENU_BORDER, 0);
     
-    draw_text(btn1, 20, 222, MENU_TEXT, -1, true);
-    draw_text(btn2, 87, 222, MENU_TEXT, -1, true);
-    draw_text(btn3, 155, 222, MENU_TEXT, -1, true);
-    draw_text(btn4, 224, 222, MENU_TEXT, -1, true);
+    draw_text(btn1, 20, LCD_Y - 18, MENU_TEXT, -1, true);
+    draw_text(btn2, 87, LCD_Y - 18, MENU_TEXT, -1, true);
+    draw_text(btn3, 155, LCD_Y - 18, MENU_TEXT, -1, true);
+    draw_text(btn4, 224, LCD_Y - 18, MENU_TEXT, -1, true);
     
     draw_batteryicon();
 }
