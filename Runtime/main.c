@@ -350,6 +350,7 @@ int main(void)
 {   
     __Set(BEEP_VOLUME, 0);
     
+#if 0
     // USART1 8N1 115200bps debug port
     RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
     USART1->BRR = 72000000 / 115200;
@@ -357,6 +358,7 @@ int main(void)
     gpio_usart1_tx_mode(GPIO_AFOUT_10);
     gpio_usart1_rx_mode(GPIO_HIGHZ_INPUT);
     printf("\nBoot!\n");
+#endif
     
 #ifndef DSONANO
     // Reduce the wait states of the FPGA & LCD interface
