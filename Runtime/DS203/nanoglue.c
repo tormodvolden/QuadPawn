@@ -7,11 +7,11 @@
 
 /* New functions to replace Quad-specific code in callers */
 
-void putcolumn(u16 x, u16 y, u16 count, u8 wait)
+void putcolumn(u16 x, u16 y, u32 *pixels, int count, int wait)
 {
 }
 
-void getcolumn(u16 x, u16 y, u32 *pixels, u32 count)
+void getcolumn(u16 x, u16 y, u32 *pixels, int count)
 {
 }
 

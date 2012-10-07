@@ -78,7 +78,7 @@ static cell AMX_NATIVE_CALL amx_putcolumn(AMX *amx, const cell *params)
 {
     // putcolumn(x, y, const pixels[], count, wait);
 #ifdef DSONANO
-    putcolumn(params[1], params[2], params[3], params[4]);
+    putcolumn(params[1], params[2], (u32*) params[3], params[4], params[5]);
 #else
     // FIXME: This could go into a Quad-specific file, defining putcolumn
 
