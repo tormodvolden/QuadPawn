@@ -7,6 +7,10 @@
 #include "amxpool.h"
 
 #include "hardware.h"
+#ifdef DSONANO
+# include "stm32f10x.h"
+# include "nanoglue.h"
+#endif
 #include "BIOS.h"
 #include "stm32f10x.h"
 #include "ds203_io.h"
@@ -367,6 +371,9 @@ int main(void)
     FSMC_BTR2 = 0x10100110;
 #endif
     
+#ifdef DSONANO
+    init_nano();
+#endif
     __USB_Init();
     __Set(ADC_CTRL, EN);       
     __Set(ADC_MODE, SEPARATE);
