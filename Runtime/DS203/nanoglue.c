@@ -2,6 +2,7 @@
 #include "stm32f10x.h"
 #include "nanoglue.h"
 #include "BIOS.h"
+#include "nanolib-addr.h"
 
 /* New functions to replace Quad-specific code in callers */
 
@@ -13,6 +14,24 @@ void getcolumn(u16 x, u16 y, u32 *pixels, u32 count)
 {
 }
 
+/* Before using functions from LIB, we must initialize the LIB data
+   if we are coming straight from the bootloader (and not via LIB) */
+static void init_nanolib_data(void) {
+
+    unsigned long *src, *dst;
+    /* copy the data segment into ram */
+    src = nanolib_sidata;
+    dst = nanolib_sdata;
+    if (src != dst)
+        while(dst < nanolib_edata)
+            *(dst++) = *(src++);
+
+    /* zero the bss segment */
+    dst = nanolib_sbss;
+    while(dst < nanolib_ebss)
+        *(dst++) = 0;
+}
+
 /* If we are starting straight from a bootloader, the hardware
    must be initialized. On the Quad this is done by the BIOS */
 void init_nano(void)
@@ -20,6 +39,7 @@ void init_nano(void)
 	/* Boot loader has fired up GPIOs C, D, E but not A, B */
         // RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOC | 
         //        RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOE, ENABLE);
+	init_nanolib_data();
 	GPIO_Config();
 	__LCD_Initial();
 	__Clear_Screen(0);
