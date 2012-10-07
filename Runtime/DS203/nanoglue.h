@@ -14,6 +14,7 @@ void getcolumn(u16 x, u16 y, u32 *pixels, u32 count);
 void init_nano(void);
 
 /* Not used for the Quad, in the LIB for the Nano */
+void Set_System(void);
 void GPIO_Config(void);
 void LCD_Initial(void);
 u8 MSD_Init(void);

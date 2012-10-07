@@ -36,15 +36,13 @@ static void init_nanolib_data(void) {
    must be initialized. On the Quad this is done by the BIOS */
 void init_nano(void)
 {
-	/* Boot loader has fired up GPIOs C, D, E but not A, B */
-        // RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOC | 
-        //        RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOE, ENABLE);
 	init_nanolib_data();
+	Set_System(); /* configures peripheral clocks */
 	GPIO_Config();
 	__LCD_Initial();
 	__Clear_Screen(0);
 	__Display_Str(8, 87, 0x07E0, 0, (u8*) "   Booting Pawn ");
-	MSD_Init();
+	MSD_Init(); /* calls SPI_Config() */
 }
 
 /* These Quad BIOS functions have equivalents in the DSO Nano LIB:
