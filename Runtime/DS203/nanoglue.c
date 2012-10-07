@@ -1,6 +1,7 @@
 
 #include "stm32f10x.h"
 #include "nanoglue.h"
+#include "nanolib.h"
 #include "BIOS.h"
 #include "nanolib-addr.h"
 
