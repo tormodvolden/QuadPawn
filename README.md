@@ -1,7 +1,14 @@
+Pawn port for DSO Nano
+======================
+
+Some initial work towards a port to the DSO Nano.
+
+For the moment this is highly experimental and does not even boot
+on the DSO Nano.
+
+
 Pawn for DSO Quad
 =================
-
-![Header image](http://kapsi.fi/~jpa/stuff/pix/pawn_header.jpg)
 
 Pawn scripting language for the DSO Quad pocket oscilloscope.
 This is intended to make programming for DSO Quad easier and to allow tens of programs to reside on the flash drive.
